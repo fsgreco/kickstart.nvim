@@ -9,6 +9,7 @@ return {
 	{ -- Fuzzy Finder (files, lsp, etc)
 		'nvim-telescope/telescope.nvim',
 		event = 'VimEnter',
+		-- branch = '0.1.x',
 		dependencies = {
 			'nvim-lua/plenary.nvim',
 			{ -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -25,7 +26,6 @@ return {
 				end,
 			},
 			{ 'nvim-telescope/telescope-ui-select.nvim' },
-
 			-- Useful for getting pretty icons, but requires a Nerd Font.
 			{ 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
 		},
@@ -61,6 +61,17 @@ return {
 				--   },
 				-- },
 				-- pickers = {}
+				defaults = {
+					mappings = {
+						i = {
+							['<C-u>'] = false,
+							['<C-d>'] = false,
+							["<C-j>"] = require('telescope.actions').move_selection_next,
+							["<C-k>"] = require('telescope.actions').move_selection_previous,
+						},
+					},
+					file_ignore_patterns = { "node_modules" },
+				},
 				extensions = {
 					['ui-select'] = {
 						require('telescope.themes').get_dropdown(),
@@ -107,6 +118,30 @@ return {
 			vim.keymap.set('n', '<leader>sn', function()
 				builtin.find_files { cwd = vim.fn.stdpath 'config' }
 			end, { desc = '[S]earch [N]eovim files' })
+
+			-- Ctrl + P search fuzzy files with Telescope
+			--vim.keymap.set('n', '<C-p>', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
+
+			local function no_other_buffers_open()
+				local bufnr_list = vim.api.nvim_list_bufs()
+				for _, bufnr in ipairs(bufnr_list) do
+					if vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, 'buflisted') then
+						return false
+					end
+				end
+				return true
+			end
+
+			vim.keymap.set('n', '<C-p>', function()
+				local telescope = require('telescope.builtin')
+				-- local tree = require('nvim-tree.view')
+				local tree = require('nvim-tree.api').tree
+				if tree.is_visible() and no_other_buffers_open() then
+					vim.cmd('NvimTreeClose')
+				end
+
+				telescope.find_files()
+			end, { desc = '[S]earch [F]iles' })
 		end,
 	},
 }

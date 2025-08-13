@@ -1,5 +1,5 @@
 return {
-	{  -- Autocompletion
+	{ -- Autocompletion with blink.cmp
 		'saghen/blink.cmp',
 		event = 'VimEnter',
 		version = '1.*',
@@ -57,10 +57,30 @@ return {
 				-- <c-k>: Toggle signature help
 				--
 				-- See :h blink-cmp-config-keymap for defining your own keymap
-				preset = 'default',
+				preset = "enter", ---@type 'enter' | 'default' | 'super-tab' | 'none'
 
 				-- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
 				--    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
+				['<C-space>'] = false,
+				-- ['<C-i>'] = { "show", "fallback" },
+				['<C-h>'] = { "show", "fallback" },
+				['<C-j>'] = { "select_next", "fallback" },
+				['<C-n>'] = { "select_next", "fallback" },
+				['<C-k>'] = { "select_prev", "fallback" },
+				['<C-p>'] = { "select_prev", "fallback" },
+				['<CR>'] = { "accept", "fallback" },
+				["<Tab>"] = {
+					function(cmp)
+						if cmp.snippet_active() then
+							return cmp.accept()
+						else
+							return cmp.select_next()
+						end
+					end,
+					"snippet_forward",
+					"fallback",
+				},
+				["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
 			},
 
 			appearance = {
@@ -72,7 +92,7 @@ return {
 			completion = {
 				-- By default, you may press `<c-space>` to show the documentation.
 				-- Optionally, set `auto_show = true` to show the documentation after a delay.
-				documentation = { auto_show = false, auto_show_delay_ms = 500 },
+				documentation = { auto_show = true, auto_show_delay_ms = 1000 },
 			},
 
 			sources = {
@@ -80,6 +100,10 @@ return {
 				providers = {
 					lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
 				},
+				min_keyword_length = 3
+				-- min_keyword_length = function()
+				-- 	return vim.bo.filetype == 'markdown' and 2 or 0
+				-- end
 			},
 
 			snippets = { preset = 'luasnip' },
@@ -91,8 +115,9 @@ return {
 			-- the rust implementation via `'prefer_rust_with_warning'`
 			--
 			-- See :h blink-cmp-config-fuzzy for more information
-			fuzzy = { implementation = 'lua' },
+			fuzzy = { implementation = 'prefer_rust_with_warning' },
 
+			-- opts_extend = { "sources.default" },
 			-- Shows a signature help window while you type arguments for a function
 			signature = { enabled = true },
 		},
