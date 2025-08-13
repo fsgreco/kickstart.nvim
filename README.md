@@ -1,5 +1,16 @@
 # kickstart.nvim
 
+## HOW TO USE IT:
+I keep this fork to stay up to date to the last changes on the OG repository.
+I will rebase from time to time.
+My working branch is "modular-configuration".
+I simply switch to it and update init.modular.lua and modules.
+Once I've done I simply copy them to my main dotfiles, so they goes like this:
+
+`init.modular.lua` => `$MY_DOTFILES_NVIM_CONF/init.lua`
+and
+`modules` => `$MY_DOTFILES_NVIM_CONF/modules`
+
 ## Introduction
 
 A starting point for Neovim that is:

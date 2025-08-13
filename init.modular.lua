@@ -248,23 +248,7 @@ rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
 
-	import { 'modules.utils' },
-
-  import { 'modules.uxui.gitsigns'},
-
-  import { 'modules.uxui.whichkey' },
-
-	import { 'modules.finder.telescope' },
-
-	import { 'modules.lsp ' },
-
-	import { 'modules.formatter.conform' }, 
-
-	import { 'modules.completions.blink' },
-
-	import { 'modules.theme' },
-
-	import { 'modules.util.mini' },
+	import { 'modules' },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
